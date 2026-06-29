@@ -35,6 +35,8 @@ function RegisterForm({ onAuth }) {
       }
 
       // El backend respondió con token + datos del usuario → los subimos al padre
+      localStorage.setItem('token', data.token)
+      localStorage.setItem('usuario', JSON.stringify(data.usuario))
       onAuth(data.token, data.usuario)
     } catch {
       setError('No se pudo conectar con el servidor.')
