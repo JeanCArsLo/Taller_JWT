@@ -35,6 +35,8 @@ function LoginForm({ onAuth }) {
       }
 
       // Subimos el token al componente padre (App.jsx)
+      localStorage.setItem('token', data.token)
+      localStorage.setItem('usuario', JSON.stringify(data.usuario))
       onAuth(data.token, data.usuario)
     } catch {
       setError('No se pudo conectar con el servidor.')
