@@ -1,0 +1,21 @@
+# ─── DEPENDENCIAS ───────────────────────────────────────────
+# Nunca se suben. Se reinstalan con "npm install"
+node_modules/
+
+# ─── VARIABLES DE ENTORNO ────────────────────────────────────
+# Contiene claves secretas. NUNCA subir a git.
+.env
+.env.local
+.env.production
+
+# ─── BUILD DEL FRONTEND ──────────────────────────────────────
+# Archivos generados por "npm run build", no son código fuente
+frontend/dist/
+
+# ─── LOGS ────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+
+# ─── SISTEMA OPERATIVO ───────────────────────────────────────
+.DS_Store        # Mac
+Thumbs.db        # Windows
