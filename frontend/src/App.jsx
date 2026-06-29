@@ -13,8 +13,11 @@ import Dashboard    from './components/Dashboard'
 
 function App() {
   // token y usuario son null cuando no hay sesión activa
-  const [token,   setToken]   = useState(null)
-  const [usuario, setUsuario] = useState(null)
+  const [token,   setToken]   = useState(() => localStorage.getItem('token') || null)
+  const [usuario, setUsuario] = useState(() => {
+    const u = localStorage.getItem('usuario')
+    return u ? JSON.parse(u) : null
+  })
   const [tab,     setTab]     = useState('login')   // 'login' | 'register'
 
   // Esta función la reciben LoginForm y RegisterForm.
@@ -25,7 +28,15 @@ function App() {
   }
 
   // Cerrar sesión = borrar el token del estado. Así de simple.
-  function onLogout() {
+  async function onLogout() {
+    // Avisa al backend que invalide el token
+    await fetch('/auth/logout', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` }
+    })
+
+    localStorage.removeItem('token')
+    localStorage.removeItem('usuario')
     setToken(null)
     setUsuario(null)
   }
