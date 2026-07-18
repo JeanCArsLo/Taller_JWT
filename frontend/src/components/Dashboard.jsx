@@ -9,6 +9,7 @@
 // ============================================================
 
 import { useState, useEffect } from 'react'
+import { API_URL } from '../config'
 
 // Genera un color de avatar determinista según el nombre
 function colorAvatar(nombre) {
@@ -64,7 +65,7 @@ function Dashboard({ token, usuario, onLogout }) {
     setErrorLista('')
     try {
       // CLAVE: mandamos el token en el header Authorization
-      const res = await fetch('/usuarios', {
+      const res = await fetch(`${API_URL}/usuarios`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       const data = await res.json()

@@ -1,0 +1,27 @@
+# Blueprint de Render (opcional). Permite crear el servicio con
+# "New +" -> "Blueprint" apuntando a este repositorio.
+# Las variables marcadas con sync:false se completan manualmente en el
+# dashboard de Render (Environment) porque son secretas.
+services:
+  - type: web
+    name: jwt-taller-backend
+    runtime: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: MONGO_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: SESSION_SECRET
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_CALLBACK_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false

@@ -6,10 +6,11 @@
 // Esto es intencional para esta práctica.
 // ============================================================
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import LoginForm    from './components/LoginForm'
 import RegisterForm from './components/RegisterForm'
 import Dashboard    from './components/Dashboard'
+import { API_URL }  from './config'
 
 function App() {
   // token y usuario son null cuando no hay sesión activa
@@ -23,14 +24,35 @@ function App() {
   // Esta función la reciben LoginForm y RegisterForm.
   // La llaman cuando el backend responde con un token exitoso.
   function onAuth(nuevoToken, datosUsuario) {
+    localStorage.setItem('token', nuevoToken)
+    localStorage.setItem('usuario', JSON.stringify(datosUsuario))
     setToken(nuevoToken)
     setUsuario(datosUsuario)
   }
 
+  // Cuando Google redirige de vuelta a /auth/google/callback, el backend
+  // reenvía al navegador a "/oauth-callback?token=...". Aquí recogemos ese
+  // token, pedimos los datos del usuario a /me y completamos el login.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const tokenDeGoogle = params.get('token')
+    if (!tokenDeGoogle) return
+
+    fetch(`${API_URL}/me`, {
+      headers: { Authorization: `Bearer ${tokenDeGoogle}` }
+    })
+      .then(res => res.json())
+      .then(datos => onAuth(tokenDeGoogle, { nombre: datos.nombre, email: datos.email }))
+      .finally(() => {
+        // Limpiamos la URL para no dejar el token visible ni reprocesarlo
+        window.history.replaceState({}, '', '/')
+      })
+  }, [])
+
   // Cerrar sesión = borrar el token del estado. Así de simple.
   async function onLogout() {
     // Avisa al backend que invalide el token
-    await fetch('/auth/logout', {
+    await fetch(`${API_URL}/auth/logout`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` }
     })

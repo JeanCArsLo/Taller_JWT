@@ -4,6 +4,7 @@
 // ============================================================
 
 import { useState } from 'react'
+import { API_URL } from '../config'
 
 function LoginForm({ onAuth }) {
   const [form,     setForm]     = useState({ email: '', password: '' })
@@ -21,7 +22,7 @@ function LoginForm({ onAuth }) {
     setError('')
 
     try {
-      const res  = await fetch('/auth/login', {
+      const res  = await fetch(`${API_URL}/auth/login`, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify(form)
@@ -34,9 +35,7 @@ function LoginForm({ onAuth }) {
         return
       }
 
-      // Subimos el token al componente padre (App.jsx)
-      localStorage.setItem('token', data.token)
-      localStorage.setItem('usuario', JSON.stringify(data.usuario))
+      // Subimos el token al componente padre (App.jsx), que lo persiste
       onAuth(data.token, data.usuario)
     } catch {
       setError('No se pudo conectar con el servidor.')
@@ -85,6 +84,12 @@ function LoginForm({ onAuth }) {
       <button type="submit" className="btn-primary" disabled={cargando}>
         {cargando ? <><span className="btn-spinner" /> Verificando...</> : 'Iniciar sesión'}
       </button>
+
+      <div className="auth-divider"><span>o</span></div>
+
+      <a href={`${API_URL}/auth/google`} className="btn-google">
+        Continuar con Google
+      </a>
 
     </form>
   )

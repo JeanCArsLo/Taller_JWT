@@ -4,6 +4,7 @@
 // ============================================================
 
 import { useState } from 'react'
+import { API_URL } from '../config'
 
 function RegisterForm({ onAuth }) {
   const [form,     setForm]     = useState({ nombre: '', email: '', password: '' })
@@ -21,7 +22,7 @@ function RegisterForm({ onAuth }) {
     setError('')
 
     try {
-      const res  = await fetch('/auth/register', {
+      const res  = await fetch(`${API_URL}/auth/register`, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify(form)
@@ -35,8 +36,6 @@ function RegisterForm({ onAuth }) {
       }
 
       // El backend respondió con token + datos del usuario → los subimos al padre
-      localStorage.setItem('token', data.token)
-      localStorage.setItem('usuario', JSON.stringify(data.usuario))
       onAuth(data.token, data.usuario)
     } catch {
       setError('No se pudo conectar con el servidor.')
@@ -100,6 +99,12 @@ function RegisterForm({ onAuth }) {
       <button type="submit" className="btn-primary" disabled={cargando}>
         {cargando ? <><span className="btn-spinner" /> Creando cuenta...</> : 'Crear cuenta'}
       </button>
+
+      <div className="auth-divider"><span>o</span></div>
+
+      <a href={`${API_URL}/auth/google`} className="btn-google">
+        Continuar con Google
+      </a>
 
     </form>
   )
